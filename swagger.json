@@ -58,6 +58,42 @@
         }
       }
     },
+    "/api/user/signup": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Register",
+        "description": "User register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Email already exists"
+          }
+        }
+      }
+    },
     "/api/products/getAllProducts": {
       "get": {
         "tags": ["Products"],
@@ -99,6 +135,248 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/products/addProduct": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Add product",
+        "description": "Add product",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "sizes": {
+                    "type": "string"
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "201": {
+            "description": "Product created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/products/rateProduct": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Rate product",
+        "description": "Rate product",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "query",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productID",
+            "in": "query",
+            "required": true,
+            "description": "Product ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "required": true,
+            "description": "Rating value",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "description": "Rating added successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User or Product not found"
+          }
+        }
+      }
+    },
+    "/api/products/filterProducts": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Filter products",
+        "description": "Filter products by price range and category",
+        "parameters": [
+          {
+            "name": "minPrice",
+            "in": "query",
+            "required": false,
+            "description": "Minimum price",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "required": false,
+            "description": "Maximum price",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Product category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/cart/addToCart": {
+      "post": {
+        "tags": ["Cart"],
+        "summary": "Add cart item",
+        "description": "Add cart item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productID": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "201": {
+            "description": "Cart item added successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User or Product not found"
+          }
+        }
+      }
+    },
+    "/api/cart/getCartItems": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Get cart items",
+        "description": "Get all cart items for the authenticated user",
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "description": "Cart items retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/cart/deleteCartItem": {
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "Delete cart item",
+        "description": "Delete a cart item by product ID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productID": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "description": "Cart item deleted successfully"
+          },
+          "404": {
+            "description": "Product not found in cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
