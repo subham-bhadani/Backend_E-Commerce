@@ -11,7 +11,7 @@ import cors from "cors";
 import { log } from "console";
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import { ApplicationError } from "./src/error-handler/applicationError.js";
-
+import { connectToMongodb } from "./src/config/mongodb.js";
 const app = express();
 
 // var corsOptions = {
@@ -59,4 +59,5 @@ app.use((req, res) => {
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
+  connectToMongodb();
 });

@@ -1,7 +1,4 @@
-import express from "express";
 import ProductModel from "./product.model.js";
-import { ApplicationError } from "../../error-handler/applicationError.js";
-
 // const productModel = new ProductModel();
 
 export default class ProductController {
