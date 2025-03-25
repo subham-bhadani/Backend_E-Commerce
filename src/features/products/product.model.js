@@ -2,25 +2,25 @@ import { ApplicationError } from "../../error-handler/applicationError.js";
 import UserModel from "../user/user.model.js";
 
 export default class ProductModel {
-  constructor(id, name, desc, imageUrl, category, price, sizes) {
-    this.id = id;
+  constructor(name, desc, imageUrl, category, price, sizes, id) {
     this.name = name;
     this.desc = desc;
     this.imageUrl = imageUrl;
     this.category = category;
     this.price = price;
     this.sizes = sizes;
+    this._id = id;
   }
 
   static getAll() {
     return products;
   }
 
-  static addProduct(product) {
-    product.id = products.length + 1;
-    products.push(product);
-    return product;
-  }
+  // static addProduct(product) {
+  //   product.id = products.length + 1;
+  //   products.push(product);
+  //   return product;
+  // }
 
   static getById(id) {
     return products.find((product) => product.id === id);

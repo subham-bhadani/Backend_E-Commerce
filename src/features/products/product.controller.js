@@ -1,21 +1,24 @@
 import ProductModel from "./product.model.js";
 // const productModel = new ProductModel();
+import ProductRepository from "./product.repository.js";
 
 export default class ProductController {
-  getAllProducts(req, res) {
+  constructor() {
+    this.productRepository = new ProductRepository();
+  }
+
+  async getAllProducts(req, res) {
     try {
-      const products = ProductModel.getAll();
-      res.json(products);
+      const products = await this.productRepository.getAllProducts();
+      res.status(200).send(products);
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal server error");
     }
   }
 
-  addProduct(req, res) {
+  async addProduct(req, res) {
     try {
-      console.log(req.body);
-      // res.status(200).send("Post request received");
       const { name, price, sizes } = req.body;
       const newProduct = {
         name,
@@ -23,19 +26,19 @@ export default class ProductController {
         sizes: sizes.split(","), // convert string to array
         imageUrl: req.file.filename, // get the filename from the file object
       };
-      const createdRecord = ProductModel.addProduct(newProduct);
-      res.status(201).send(createdRecord);
+      const product = await this.productRepository.addProduct(newProduct);
+      console.log(product, "product in controller");
+      res.status(201).send(product);
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal server error");
     }
   }
 
-  getOne(req, res) {
+  async getOne(req, res) {
     try {
-      console.log(req.params, "subhammmmm");
       const { id } = req.params;
-      const product = ProductModel.getById(parseInt(id));
+      const product = await this.productRepository.getProductById(id);
       if (!product) {
         res.status(404).send("Product not found");
       } else {
@@ -47,22 +50,24 @@ export default class ProductController {
     }
   }
 
-  rateProduct(req, res, next) {
+  async rateProduct(req, res, next) {
     try {
-      const { userID, productID, rating } = req.query;
-      ProductModel.rateProduct(userID, productID, rating);
+      const userID = req.userID;
+      const { productID, rating } = req.body;
+      console.log(productID, rating, userID, "productID, rating, userID");
+      await this.productRepository.rateProduct(userID, productID, rating);
       res.status(200).send("Rating added successfully");
     } catch (err) {
       next(err);
     }
   }
 
-  filterProducts(req, res) {
+  async filterProducts(req, res) {
     try {
-      const { minPrice, maxPrice, category } = req.query;
-      const result = ProductModel.filter(minPrice, maxPrice, category);
-      console.log(result, "!!!!!!!!!!!!!!!!!");
-      res.status(200).send(result);
+      const { minPrice, maxPrice } = req.query;
+      console.log(minPrice, maxPrice, "minPrice, maxPrice");
+      const products = await this.productRepository.filter(minPrice, maxPrice);
+      res.status(200).send(products);
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal server error");

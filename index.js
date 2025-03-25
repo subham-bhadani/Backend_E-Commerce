@@ -1,4 +1,6 @@
 import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
 import swagger from "swagger-ui-express";
 import bodyParser from "body-parser";
 import productRouter from "./src/features/products/product.routes.js";
@@ -12,8 +14,8 @@ import { log } from "console";
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import { ApplicationError } from "./src/error-handler/applicationError.js";
 import { connectToMongodb } from "./src/config/mongodb.js";
-const app = express();
 
+const app = express();
 // var corsOptions = {
 //   origin: "http://localhost:3001",
 //   // optionsSuccessStatus: 200,

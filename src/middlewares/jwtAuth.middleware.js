@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
-const jwtSecret = "7DCCB5957DA8EABEB99F1F36FDE89";
+const jwtSecret = process.env.JWT_SECRET; // 7DCCB5957DA8EABEB99F1F36FDE89 jwtSecret
+//console.log(jwtSecret, "jwtSecret");
 
 const jwtAuth = (req, res, next) => {
   const token = req.header("authorization")?.replace("Bearer ", "");

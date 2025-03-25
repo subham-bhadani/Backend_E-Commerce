@@ -34,7 +34,7 @@ export default class UserController {
         if (!result) {
           throw new ApplicationError(401, "Invalid password");
         }
-        const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret, {
+        const token = jwt.sign({ id: user._id, email: user.email }, jwtSecret, {
           expiresIn: "1h",
         });
         res.status(200).send({ token });
