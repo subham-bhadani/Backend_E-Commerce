@@ -8,6 +8,7 @@ import { userRouter } from "./src/features/user/user.routes.js";
 import basicAuthorizer from "./src/middlewares/basicAuth.middleware.js";
 import jwtAuth from "./src/middlewares/jwtAuth.middleware.js";
 import cartRouter from "./src/features/cart/cartItem.routes.js";
+import orderRouter from "./src/features/order/order.routes.js";
 import swaggerDocument from "./swagger.json" assert { type: "json" }; // Import swagger.json with assertion
 import cors from "cors";
 import { log } from "console";
@@ -41,6 +42,7 @@ app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument)); // Use swag
 app.use("/api/products", jwtAuth, productRouter);
 app.use("/api/cart", jwtAuth, cartRouter);
 app.use("/api/user", userRouter);
+app.use("/api/order", jwtAuth, orderRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to ecom api's");

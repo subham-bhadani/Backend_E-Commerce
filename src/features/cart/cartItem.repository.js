@@ -11,15 +11,38 @@ export default class CartItemRepository {
     try {
       const db = getDb();
       const collection = db.collection(this.collection);
-      await collection.insertOne({
-        userID: new ObjectId(userID),
-        productID: new ObjectId(productID),
-        quantity,
-      });
+      const id = await this.getNextCounter(db);
+      await collection.updateOne(
+        {
+          userID: new ObjectId(userID),
+          productID: new ObjectId(productID),
+        },
+        {
+          $setOnInsert: { _id: id },
+          $inc: { quantity: quantity },
+        },
+        { upsert: true }
+      );
     } catch (err) {
       console.log(err, "error in model");
       throw new ApplicationError(500, "Error in adding cartItem");
     }
+  }
+
+  async getNextCounter(db) {
+    const resultDocument = await db
+      .collection("counters")
+      .findOneAndUpdate(
+        { _id: "cartItemId" },
+        { $inc: { value: 1 } },
+        { returnDocument: "after" }
+      );
+    console.log(resultDocument, "resultDocument in getNextCounter");
+    console.log(
+      resultDocument.value,
+      "resultDocument.value.value in getNextCounter"
+    );
+    return resultDocument.value;
   }
 
   async getCartItem(userID) {
